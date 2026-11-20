@@ -1,5 +1,31 @@
 # Day 11 — Controlled Agent Security (2026)
 
+## 🧑‍🎓 Thông tin học viên
+
+| | |
+|---|---|
+| **Họ tên** | Phạm Ngọc Long |
+| **MSSV** | 2A202604111 |
+| **Lớp** | K5 — L3B |
+| **Bài** | Day 11 — Guardrails, HITL & Responsible AI |
+
+### Cách chạy nhanh (macOS / Linux)
+
+```bash
+python3.13 -m venv .venv && source .venv/bin/activate   # Python 3.11–3.13 (nemoguardrails chưa hỗ trợ 3.14+)
+pip install -r requirements.txt
+cp .env.example .env        # điền OPENROUTER_API_KEY + OPENAI_API_KEY (hoặc GOOGLE_API_KEY)
+
+python src/main.py --part 2   # CP2 — input/output guardrails (in terminal)
+python src/main.py --part 3   # CP3 — pipeline Blue → outputs/results.json, audit_log.json, metrics.json
+python src/main.py --part 4   # CP4 — tấn công Red + Red Advance → outputs/attack_results.json
+
+pytest tests/smoke -q && pytest tests/public -q
+python scripts/grade.py --submission-dir . --out outputs/grade_report.json
+```
+
+---
+
 > 👤 **Hình thức:** bài tập **cá nhân** (1 người / 1 MSSV).  
 > 🎯 **Mục tiêu:** đóng vai **Blue Team** để học cách xây Guardrails phòng thủ, rồi đóng vai **Red Team** để tấn công agent **Red** hoặc **Red Advance**.  
 > ✅ Làm theo **Checkpoint 1 → 5** trong [`CHECKPOINTS.md`](CHECKPOINTS.md) · nộp theo [`SUBMISSION.md`](SUBMISSION.md).
