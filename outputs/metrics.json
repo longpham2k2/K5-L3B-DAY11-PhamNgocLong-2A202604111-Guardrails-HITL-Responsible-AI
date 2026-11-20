@@ -1,0 +1,23 @@
+{
+  "total_requests": 34,
+  "blocked_requests": 23,
+  "block_rate": 0.6764705882352942,
+  "rate_limit_hits": 12,
+  "judge_checks": 0,
+  "judge_fails": 0,
+  "judge_fail_rate": 0.0,
+  "alerts": [
+    {
+      "metric": "block_rate",
+      "value": 0.6764705882352942,
+      "threshold": 0.5,
+      "message": "High block rate - possible attack wave or over-blocking"
+    },
+    {
+      "metric": "rate_limit_hits",
+      "value": 12,
+      "threshold": 5,
+      "message": "High rate limit hits — possible attack wave"
+    }
+  ]
+}

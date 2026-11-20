@@ -99,13 +99,35 @@ except FileNotFoundError:
 # Blue Team — fixed OpenRouter Liquid
 # ---------------------------------------------------------------------------
 
+# Opt-in override (approved by Key Coach because the shared OpenRouter free tier
+# was returning 429 for the whole class): when LIQUID_API_KEY is set, Blue calls
+# Liquid's OpenAI-compatible API directly. Leave it empty to use the default path.
+PROVIDER_LIQUID = "liquid"
+
+
+def _liquid_settings() -> tuple[str, str, str] | None:
+    key = os.environ.get("LIQUID_API_KEY", "").strip()
+    if not key:
+        return None
+    base_url = os.environ.get("LIQUID_BASE_URL", "").strip()
+    model = os.environ.get("LIQUID_MODEL", "").strip()
+    missing = [n for n, v in (("LIQUID_BASE_URL", base_url), ("LIQUID_MODEL", model)) if not v]
+    if missing:
+        raise RuntimeError(
+            f"LIQUID_API_KEY is set but {', '.join(missing)} is empty in .env. "
+            "Fill them in, or clear LIQUID_API_KEY to use OpenRouter."
+        )
+    return key, base_url, model
+
+
 def get_blue_provider() -> str:
-    return BLUE_PROVIDER
+    return PROVIDER_LIQUID if _liquid_settings() else BLUE_PROVIDER
 
 
 def get_blue_model() -> str:
-    # Hard-locked; env cannot override for the graded Blue Team path.
-    return BLUE_MODEL
+    # Locked to BLUE_MODEL unless the Liquid override above is configured.
+    liquid = _liquid_settings()
+    return liquid[2] if liquid else BLUE_MODEL
 
 
 def get_openrouter_api_key() -> str:
@@ -113,7 +135,10 @@ def get_openrouter_api_key() -> str:
 
 
 def blue_client_kwargs() -> dict:
-    """OpenAI SDK kwargs pointing at OpenRouter (Blue Team only)."""
+    """OpenAI SDK kwargs for Blue: Liquid if configured, otherwise OpenRouter."""
+    liquid = _liquid_settings()
+    if liquid:
+        return {"api_key": liquid[0], "base_url": liquid[1]}
     return {
         "api_key": get_openrouter_api_key() or None,
         "base_url": (
